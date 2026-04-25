@@ -1,12 +1,3 @@
-/**
- * Name:    Anurag Muley
- * Batch:   B2
- * CRN:     22120087
- * Subject: HPC
- * Title:   HPC-Assign2-Parallel Bubble Sort and Merge sort using OpenMP
- */
-
-
 #include <iostream>
 #include <omp.h>
 #include <random>
@@ -62,17 +53,21 @@ int main(int argc, char* argv[]){
         return 1;
     }
 
-
-
-    
-
-
+    cout << "Normal Bubble Sort: ";
     executeAndCalculateElapsedTime(nums, normalBubbleSort);
-    executeAndCalculateElapsedTime(nums, parallelBubbleSort);
+    cout << endl;
 
+    cout << "Parallel Bubble Sort: ";
+    executeAndCalculateElapsedTime(nums, parallelBubbleSort);
+    cout << endl;
+
+    cout << "Normal Merge Sort: ";
     executeAndCalculateElapsedTime(nums, normalMergeSort);
+    cout << endl;
+
+    cout << "Parallel Merge Sort: ";
     executeAndCalculateElapsedTime(nums, parallelMergeSort);
-    
+    cout << endl;
     
     return 0;
 
@@ -242,12 +237,11 @@ void parallelMergeSort(vector<int> nums) {
 
 /**
  * OUTPUT:
- * PS D:\8th SEM\HPC\HPC_CODES> g++ hpc2.cpp -o out         
- * PS D:\8th SEM\HPC\HPC_CODES> ./out -y 10000
- * Flag: -y
- * Size: 10000
- * Operation took 1144ms
- * Operation took 587ms
- * Operation took 8ms
- * Operation took 9ms
+ * PS D:\8th SEM\HPC\HPC_CODES\HPC2> ./out -n 100000
+ * Flag: -n
+ * Size: 100000
+ * Normal Bubble Sort: Operation took 65133ms
+ * Parallel Bubble Sort: Operation took 34487ms
+ * Normal Merge Sort: Operation took 48ms
+ * Parallel Merge Sort: Operation took 46ms
  */

@@ -55,3 +55,14 @@ int main(int argc, char* argv[]) {
 
     return 0;
 }
+
+/**
+ * OUTPUT:
+ * PS D:\8th SEM\HPC\HPC_CODES\HPC3> ./out -n 10000
+ * Flag: -n
+ * Size: 10000
+ * Min: -2147467200
+ * Max: 2147350208
+ * Sum: -38167755756
+ * Average: -3.81678e+006
+ */
