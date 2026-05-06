@@ -39,10 +39,11 @@ int main(int argc, char* argv[]) {
     long long sum = 0;
 
     // Parallel Reduction for multiple operations simultaneously
+    // why to write 3 for-loops when you can do job in one lol
     #pragma omp parallel for reduction(min:min_val) reduction(max:max_val) reduction(+:sum)
     for (int i = 0; i < size; i++) {
-        if (nums[i] < min_val) min_val = nums[i];
-        if (nums[i] > max_val) max_val = nums[i];
+        min_val = min(min_val, nums[i]);
+        max_val = max(max_val, nums[i]);
         sum += nums[i];
     }
 
@@ -55,14 +56,3 @@ int main(int argc, char* argv[]) {
 
     return 0;
 }
-
-/**
- * OUTPUT:
- * PS D:\8th SEM\HPC\HPC_CODES\HPC3> ./out -n 10000
- * Flag: -n
- * Size: 10000
- * Min: -2147467200
- * Max: 2147350208
- * Sum: -38167755756
- * Average: -3.81678e+006
- */

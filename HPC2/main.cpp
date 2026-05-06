@@ -49,7 +49,7 @@ int main(int argc, char* argv[]){
         if(flag == "-y") printVector(nums);
 
     } catch (...) {
-        cerr << "USAGE: ./out <show_vector_flag> <number_of_elements>" << endl;
+        cerr << "USAGE: ./out <show_vector_flag> <number_of_elements> | compile using -fopenmp and -O2 flags" << endl;
         return 1;
     }
 
@@ -206,42 +206,38 @@ void normalMergeSort(vector<int> nums) {
     mergeSortHelper(nums, 0, nums.size() - 1);
 }
 
-void parallelMergeSortHelper(vector<int>& nums, int left, int right, int depth) {
-    if(left >= right) return;
+void parallelMergeSortTask(vector<int>& nums, int left, int right, int depth, int cutoff) {
+    if (left >= right) return;
+
+    int size = right - left + 1;
+    if (depth <= 0 || size <= cutoff) {
+        mergeSortHelper(nums, left, right);
+        return;
+    }
 
     int mid = left + (right - left) / 2;
 
-    if(depth <= 0) {
-        parallelMergeSortHelper(nums, left, mid, depth - 1);
-        parallelMergeSortHelper(nums, mid + 1, right, depth - 1);
-    } else {
-        #pragma omp parallel sections
-        {
-            #pragma omp section
-            parallelMergeSortHelper(nums, left, mid, depth - 1);
+    #pragma omp task shared(nums) if (depth > 0)
+    parallelMergeSortTask(nums, left, mid, depth - 1, cutoff);
 
-            #pragma omp section
-            parallelMergeSortHelper(nums, mid + 1, right, depth - 1);
-        }
-    }
+    #pragma omp task shared(nums) if (depth > 0)
+    parallelMergeSortTask(nums, mid + 1, right, depth - 1, cutoff);
 
+    #pragma omp taskwait
     merge(nums, left, mid, right);
 }
 
 void parallelMergeSort(vector<int> nums) {
-    if(nums.empty()) return;
-    int maxDepth = 32;
-    parallelMergeSortHelper(nums, 0, nums.size() - 1, maxDepth);
+    if (nums.empty()) return;
+    int threads = omp_get_max_threads();
+    int maxDepth = 0;
+    while ((1 << maxDepth) < threads) maxDepth++;
+    int cutoff = 4096;
+
+    #pragma omp parallel
+    {
+        #pragma omp single
+        parallelMergeSortTask(nums, 0, nums.size() - 1, maxDepth, cutoff);
+    }
 }
 
-
-/**
- * OUTPUT:
- * PS D:\8th SEM\HPC\HPC_CODES\HPC2> ./out -n 100000
- * Flag: -n
- * Size: 100000
- * Normal Bubble Sort: Operation took 65133ms
- * Parallel Bubble Sort: Operation took 34487ms
- * Normal Merge Sort: Operation took 48ms
- * Parallel Merge Sort: Operation took 46ms
- */
