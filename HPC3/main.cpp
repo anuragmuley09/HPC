@@ -1,10 +1,11 @@
-#include <iostream>
-#include <vector>
+#include <bits/stdc++.h>
 #include <omp.h>
-#include <climits>
-#include "../utils.hpp"
+#include <random>
 
 using namespace std;
+
+vector<int> getRandomVector(int size);
+void printVector(vector<int>& nums);
 
 int main(int argc, char* argv[]) {
 
@@ -55,4 +56,20 @@ int main(int argc, char* argv[]) {
     cout << "Average: " << average << endl;
 
     return 0;
+}
+
+
+vector<int> getRandomVector(int size) {
+    vector<int> nums;
+    random_device rd;
+    mt19937 gen(rd());
+    uniform_int_distribution<int> dist(-1000, 1000); // INT_MAX + INT_MAX == long long 
+    while(size--) nums.push_back(dist(gen));
+    return nums;   
+}
+
+
+void printVector(vector<int>& nums) {
+    for(const int& num : nums) cout << num << " ";
+    cout << "\n";
 }
